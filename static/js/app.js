@@ -106,7 +106,7 @@ function updateCircles(data, circlesGroup, textGroup, tip, xScale,
 
 // Read in data, set up tool tip, display initial circle plots, 
 // circle text, and axes
-d3.csv("/data.csv", data => {
+d3.csv("/static/data/data.csv", data => {
 
   var xScale = getXscale(data, selectedXaxis);
   var yScale = getYscale(data, selectedYaxis);
