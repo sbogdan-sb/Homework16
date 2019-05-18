@@ -1,3 +1,4 @@
+// Set up chart area
 var svgWidth = 1000;
 var svgHeight = 700;
 
@@ -20,11 +21,14 @@ var svg = d3
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
+// Set initial values for chart x and y active labels
 var selectedXaxis = "poverty";
 var selectedYaxis = "obesity";
 var dollarSign = "";
 var percentSign = "%";
 
+
+// Functions to set x and y scales
 function getXscale(data, axis){
   var xExtent = d3.extent(data, d => +d[selectedXaxis]);
 
@@ -45,6 +49,9 @@ function getYscale(data, axis){
   return yScale;
 }
 
+
+// Functions to transition x and y axes when new data 
+// to display is selected
 function updateXaxis(xScale, x_axis) {
   var newAxis = d3.axisBottom().scale(xScale);
 
@@ -54,7 +61,6 @@ function updateXaxis(xScale, x_axis) {
 
   return;
 }
-
 
 function updateYaxis(yScale, y_axis) {
   var newyAxis = d3.axisLeft().scale(yScale);
@@ -66,6 +72,9 @@ function updateYaxis(yScale, y_axis) {
   return;
 }
 
+
+// Function to update circle, circle text, and tool tip labels 
+// when new data is selected
 function updateCircles(data, circlesGroup, textGroup, tip, xScale, 
     yScale, selectedXaxis, selectedYaxis) {
 
@@ -94,6 +103,9 @@ function updateCircles(data, circlesGroup, textGroup, tip, xScale,
   return;
 }
 
+
+// Read in data, set up tool tip, display initial circle plots, 
+// circle text, and axes
 d3.csv("/static/data/data.csv", data => {
 
   var xScale = getXscale(data, selectedXaxis);
@@ -159,6 +171,7 @@ d3.csv("/static/data/data.csv", data => {
     .call(leftAxis);
 
   
+
   // Set up axes lable groups and configure/add labels
   var xLabels = chartGroup.append("g")
     .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
@@ -218,23 +231,27 @@ d3.csv("/static/data/data.csv", data => {
     .text("Lacks Healthcare(%)")
 
 
+  // Call back functions when axes labels are clicked that
+  // update circle plots, active axis label, and tool tip labels
   xLabels.selectAll("text")
     .on("click", function () {
-      // get value of selection
+
       var axisValue = d3.select(this).attr("value");
+      
       if (axisValue != selectedXaxis) {
 
-        // replaces chosenXaxis with value
         selectedXaxis = axisValue;
 
+        // Call functions to update x axis circle plot 
+        // based on selected x axis label
         xScale = getXscale(data, selectedXaxis);
-        // x_axis = updateXaxis(xScale, x_axis)
         updateXaxis(xScale, x_axis);
 
         updateCircles(data, circlesGroup, textGroup, tip, xScale, 
           yScale, selectedXaxis, selectedYaxis);
         
-        // changes classes to change bold text
+        // changes classes to change selected x axis
+        // label to bold text
         if (selectedXaxis == "poverty") {
           povertyLabel
             .classed("active", true)
@@ -273,22 +290,21 @@ d3.csv("/static/data/data.csv", data => {
 
   yLabels.selectAll("text")
     .on("click", function () {
-      // get value of selection
       var axisValue = d3.select(this).attr("value");
       if (axisValue != selectedYaxis) {
 
-        // replaces chosenXaxis with value
         selectedYaxis = axisValue;
-        console.log(selectedYaxis);
 
+        // Call functions to update x axis circle plot 
+        // based on selected x axis label
         yScale = getYscale(data, selectedYaxis)
         updateYaxis(yScale, y_axis)
 
         updateCircles(data, circlesGroup, textGroup, tip, xScale, 
           yScale, selectedXaxis, selectedYaxis);
 
-        
-        // changes classes to change bold text
+        // changes classes to change selected x axis
+        // label to bold text
         if (selectedYaxis == "obesity") {
           obesityLabel
             .classed("active", true)
