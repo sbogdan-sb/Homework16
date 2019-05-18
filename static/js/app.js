@@ -94,7 +94,7 @@ function updateCircles(data, circlesGroup, textGroup, tip, xScale,
   return;
 }
 
-d3.csv('../../data/data.csv', data => {
+d3.csv("../../static/data/data.csv", data => {
 
   var xScale = getXscale(data, selectedXaxis);
   var yScale = getYscale(data, selectedYaxis);
